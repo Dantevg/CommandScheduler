@@ -18,7 +18,7 @@ object CommandScheduler : ModInitializer {
 	val logger: Logger = LoggerFactory.getLogger(MOD_ID)
 	
 	private var config = loadConfig()
-	private val commands = config.commands.map { ScheduledCommand(it.schedule, it.command) }
+	private var commands = config.commands.map { ScheduledCommand(it.schedule, it.command) }
 	
 	override fun onInitialize() {
 		command // auto-register command with Silk
@@ -56,5 +56,9 @@ object CommandScheduler : ModInitializer {
 	fun reload() {
 		logger.info("Reloading config")
 		config = loadConfig()
+		commands = config.commands.map { ScheduledCommand(it.schedule, it.command) }
+		for (command in commands) {
+			logger.info("Scheduled command '${command.command}'. Next run at ${command.nextFormatted()}.")
+		}
 	}
 }
